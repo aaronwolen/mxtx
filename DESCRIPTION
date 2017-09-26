@@ -1,0 +1,9 @@
+Package: mxtx
+Title: OpenMx Transcriber 
+Version: 0.0.0.9000
+Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Description: Automated reporting for OpenMx analyses.
+Depends: R (>= 3.4.0)
+License: MIT
+Encoding: UTF-8
+LazyData: true
