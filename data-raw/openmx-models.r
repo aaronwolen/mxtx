@@ -8,7 +8,9 @@ library(devtools)
 
 data("twinData", package = "OpenMx")
 twinData <- transform(twinData, age = age / 100)
-twinData <- subset(twinData, !is.na(age) & zyg %in% c(1, 3))
+twinData <- subset(twinData,
+                   !is.na(age) & zyg %in% c(1, 3),
+                   select = c("zyg", "age", "bmi1", "bmi2"))
 
 # SET MODEL PARAMETER VALUES ----------------------------------------------
 
@@ -90,4 +92,4 @@ AdeModel  <- mxModel( "ADE", pars, modelMZ, modelDZ, multi )
 
 AdeFit    <- mxRun(AdeModel)
 
-devtools::use_data(AdeFit)
+devtools::use_data(AdeFit, overwrite = TRUE)
