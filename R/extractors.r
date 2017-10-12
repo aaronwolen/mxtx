@@ -36,3 +36,11 @@ smSummaries <- function(x) {
   purrr::map_df(data, calc_summaries, .id = ".submodel")
 }
 
+smN <- function(x) {
+  length(submodels(x))
+}
+
+smNames <- function(x) {
+  names(submodels(x))
+}
+
