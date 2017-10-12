@@ -6,13 +6,15 @@ output: html_document
 
 # Introduction
 
-This report is designed to help explore the results of an OpenMx analysis. 
+This report is designed to help explore the results of an OpenMx analysis.
 
 ```{r setup, include=FALSE}
 library(knitr)
+library(kableExtra)
 suppressPackageStartupMessages(library(OpenMx))
 
 opts_chunk$set(echo = FALSE)
+options(knitr.table.format = "html")
 
 model_summary <- summary(model)
 ```
@@ -20,6 +22,26 @@ model_summary <- summary(model)
 # `r model$name` Model Summary
 
 This model was fit on `r format(model@output$timestamp, "%x at %I:%M%P")` using OpenMx v`r AdeFit@output$mxVersion`.
+
+
+## Submodels
+
+```{r submodel-description, results='asis'}
+if (smN(model) == 1) {
+  cat("This model included only a single submodel ", smNames(model), ".", sep = "")
+} else {
+  cat("This model included ", smN(model), " submodels.", sep = "")
+}
+```
+
+The following table provides summary statistics for each of the included variables:
+
+```{r submodel-summary-stats, results='asis'}
+smSummaries(model) %>%
+  kable() %>%
+  collapse_rows(columns = 1) %>%
+  kable_styling(bootstrap_options = "condensed")
+```
 
 ## Free Parameters
 
@@ -36,4 +58,3 @@ This tables includes the number of observed statistics, the number of estimated 
 ```{r table-gof}
 kable(table_gof(model_summary))
 ```
-
