@@ -16,9 +16,9 @@ twinData <- subset(twinData,
 
 Vars      <- 'bmi'                     # outcome variable
 covVars   <- 'age'                     # covariates
-selVars   <- paste0(Vars,c(rep(1, nv),rep(2, nv)))
 nv        <- 1                         # number of variables
 ntv       <- nv*2                      # number of total variables
+selVars   <- paste0(Vars,c(rep(1, nv),rep(2, nv)))
 svMe      <- 20                        # start value for means
 svVa      <- .8                        # start value for variance
 lbVa      <- .0001                     # start value for lower bounds
@@ -74,11 +74,11 @@ dataDZ <- mxData(observed = subset(twinData, zyg == 3), type = "raw")
 # Objective objects for Multiple Groups
 expMZ <-
   mxExpectationNormal(covariance = "expCovMZ",
-                      means = "expMean",
+                      means = "expMean")
                       dimnames = selVars)
 expDZ <-
   mxExpectationNormal(covariance = "expCovDZ",
-                      means = "expMean",
+                      means = "expMean")
                       dimnames = selVars)
 funML <- mxFitFunctionML()
 
