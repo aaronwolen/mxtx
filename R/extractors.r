@@ -1,4 +1,3 @@
-#' @importFrom magrittr "%>%"
 #' @importFrom rlang are_na
 #' @importFrom purrr map map_df invoke_map keep discard
 #' @importFrom stats var
@@ -8,9 +7,16 @@ submodels <- function(x) {
   methods::slot(x, "submodels")
 }
 
-# Exract submodel data
-smData <- function(x) {
-  purrr::map(submodels(x), ~.x@data@observed, .id = ".submodel")
+#' Extract submodel data
+#'
+#' @param x MxModel object
+#' @param rm.invar remove variables with invariant values
+#' @param num.only remove non-numeric variables
+smData <- function(x, rm.invar = TRUE, num.only = TRUE) {
+  out <- purrr::map(submodels(x), ~.x@data@observed, .id = ".submodel")
+  if (rm.invar) out <- purrr::map(out, purrr::discard, .p = is_invariant)
+  if (num.only) out <- purrr::map(out, purrr::keep, .p = is.numeric)
+  out
 }
 
 smSummaries <- function(x) {
@@ -24,13 +30,10 @@ smSummaries <- function(x) {
     )
 
   calc_summaries <- function(x) {
-    x %>%
-      purrr::keep(is.numeric) %>%
-      purrr::discard(is_invariant) %>%
-      purrr::map_df(
-        ~ purrr::invoke_map(summaries, x = .x, na.rm = TRUE),
-        .id = ".variable"
-      )
+    purrr::map_df(x,
+      ~ purrr::invoke_map(summaries, x = .x, na.rm = TRUE),
+      .id = ".variable"
+    )
   }
 
   purrr::map_df(data, calc_summaries, .id = ".submodel")
