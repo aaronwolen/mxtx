@@ -53,12 +53,22 @@ smSummaries(model) %>%
 sm.cors <- model %>% 
   smData() %>% 
   map(polycor::hetcor, use = "pairwise.complete")
+
+# use number of variables to calculate figure dimensions
+nvars <- nrow(sm.cors[[1]]$correlations)
+fig.height <- 2 + (0.5 * nvars) # account for title
+fig.width  <- 1.5 + (0.5 * nvars)
 ```
 
-```{r covar-plots, fig.keep='all'}
+```{r covar-plots, fig.keep='all', fig.width=fig.width, fig.height=fig.height}
 sm.cors %>% 
   map("correlations") %>%
-  iwalk(~ corrplot(.x, title = .y))
+  iwalk(~ corrplot(
+    corr = .x, 
+    title = .y,
+    mar = c(1, 0, 2.5, 1)
+    )
+  )
 ```
 
 
