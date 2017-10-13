@@ -11,6 +11,8 @@ This report is designed to help explore the results of an OpenMx analysis.
 ```{r setup, include=FALSE}
 library(knitr)
 library(kableExtra)
+library(polycor)
+library(corrplot)
 suppressPackageStartupMessages(library(OpenMx))
 
 opts_chunk$set(echo = FALSE)
@@ -34,6 +36,8 @@ if (smN(model) == 1) {
 }
 ```
 
+### Submmary Statistics
+
 The following table provides summary statistics for each of the included variables:
 
 ```{r submodel-summary-stats, results='asis'}
@@ -42,6 +46,21 @@ smSummaries(model) %>%
   collapse_rows(columns = 1) %>%
   kable_styling(bootstrap_options = "condensed")
 ```
+
+### Covariance Matrices
+
+```{r covar-calc, fig.keep='all'}
+sm.cors <- model %>% 
+  smData() %>% 
+  map(polycor::hetcor, use = "pairwise.complete")
+```
+
+```{r covar-plots, fig.keep='all'}
+sm.cors %>% 
+  map("correlations") %>%
+  iwalk(~ corrplot(.x, title = .y))
+```
+
 
 ## Free Parameters
 
