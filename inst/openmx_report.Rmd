@@ -49,6 +49,8 @@ smSummaries(model) %>%
 
 ### Covariance Matrices
 
+Pairwise correlations were calculated among all variables comprising each submodel. Pearson product-moment correlations are used for numeric variables, polyserial correlations for numeric and ordinal variables, and polychoric correlations for ordinal variables.
+
 ```{r covar-calc}
 sm.cors <- model %>% 
   smData() %>% 
