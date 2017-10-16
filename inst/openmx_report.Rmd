@@ -49,7 +49,7 @@ smSummaries(model) %>%
 
 ### Covariance Matrices
 
-Pairwise correlations were calculated among all variables comprising each submodel. Pearson product-moment correlations are used for numeric variables, polyserial correlations for numeric and ordinal variables, and polychoric correlations for ordinal variables.
+Pairwise correlations were calculated among all variables comprising each submodel. The upper-triangles contain pearson product-moment correlations between for numeric variables, polyserial correlations between numeric and ordinal variables, and polychoric correlations between ordinal variables; the lower-triangles contain p-values for tests of bivariate normality for each pair of variables.
 
 ```{r covar-calc}
 sm.cors <- model %>% 
@@ -59,9 +59,11 @@ sm.cors <- model %>%
 
 ```{r covar-tables, results='asis'}
 sm.cors %>% 
-  map("correlations") %>%
+  map(spliceHetCor, values = c("tests", "correlations")) %>%
+  map(formatC, digits = 3, width = -1) %>% 
+  map(sub, pattern = "NA", replacement = "") %>% 
   iwalk(~ .x %>% 
-          kable(caption = sprintf("%s correlations", .y), digits = 2) %>% 
+          kable(caption = sprintf("%s correlations", .y)) %>% 
           kable_styling(bootstrap_options = "condensed") %>% 
           cat
   )
