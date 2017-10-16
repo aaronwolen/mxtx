@@ -61,7 +61,7 @@ sm.cors <- model %>%
 sm.cors %>% 
   map("correlations") %>%
   iwalk(~ .x %>% 
-          kable(caption = .y, digits = 2) %>% 
+          kable(caption = sprintf("%s correlations", .y), digits = 2) %>% 
           kable_styling(bootstrap_options = "condensed") %>% 
           cat
   )
