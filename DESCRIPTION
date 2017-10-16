@@ -13,7 +13,8 @@ Imports:
   rlang,
   purrr,
   knitr,
-  kableExtra
+  kableExtra,
+  polycor
 License: MIT
 Encoding: UTF-8
 LazyData: true
