@@ -13,6 +13,7 @@ library(knitr)
 library(kableExtra)
 library(polycor)
 library(corrplot)
+library(purrr)
 suppressPackageStartupMessages(library(OpenMx))
 
 opts_chunk$set(echo = FALSE)
