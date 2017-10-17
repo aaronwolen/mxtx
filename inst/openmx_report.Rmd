@@ -1,6 +1,9 @@
 ---
 title: OpenMx Analysis
-output: html_document
+output: 
+  html_document: 
+    toc: yes
+    toc_depth: 1
 ---
 
 
@@ -13,68 +16,29 @@ library(knitr)
 library(kableExtra)
 library(polycor)
 library(purrr)
+library(rlang)
 suppressPackageStartupMessages(library(OpenMx))
 
 opts_chunk$set(echo = FALSE)
 options(knitr.table.format = "html")
-
-model_summary <- summary(model)
 ```
 
-# `r model$name` Model Summary
+```{r model-summaries, eval=TRUE}
+# labels for chunk names and paths
+.labels <- make.names(map_chr(.models, "name"))
+names(.models) <- .labels
 
-This model was fit on `r format(model@output$timestamp, "%x at %I:%M%P")` using OpenMx v`r AdeFit@output$mxVersion`.
-
-
-## Submodels
-
-```{r submodel-description, results='asis'}
-if (smN(model) == 1) {
-  cat("This model included only a single submodel ", smNames(model), ".", sep = "")
-} else {
-  cat("This model included ", smN(model), " submodels.", sep = "")
-}
+src <- mapply(knit_expand, .label = .labels, MoreArgs = list(file = system.file("modules/model-summary.Rmd", package = "mxtx")))
 ```
 
-### Submmary Statistics
-
-The following table provides summary statistics for each of the included variables:
-
-```{r submodel-summary-stats, results='asis'}
-smSummaries(model) %>%
-  kable() %>%
-  collapse_rows(columns = 1) %>%
-  kable_styling(bootstrap_options = "condensed")
-```
-
-### Covariance Matrices
-
-Pairwise correlations were calculated among all variables comprising each submodel. The upper-triangles contain pearson product-moment correlations between for numeric variables, polyserial correlations between numeric and ordinal variables, and polychoric correlations between ordinal variables; the lower-triangles contain p-values for tests of bivariate normality for each pair of variables.
-
-```{r covar-calc}
-sm.cors <- model %>% 
-  smData() %>% 
-  map(polycor::hetcor, use = "pairwise.complete")
-```
-
-```{r covar-tables, results='asis'}
-sm.cors %>% 
-  map(spliceHetCor, values = c("tests", "correlations")) %>%
-  map(formatC, digits = 3, width = -1) %>% 
-  map(sub, pattern = "NA", replacement = "") %>% 
-  iwalk(~ .x %>% 
-          kable(caption = sprintf("%s correlations", .y)) %>% 
-          kable_styling(bootstrap_options = "condensed") %>% 
-          cat
-  )
-```
-
+`r knit(text = unlist(src))`
 
 ## Free Parameters
 
 This table shows a list of all the free parameters with their name, matrix element locators, parameter estimate and standard error, as well as lower and upper bounds if those were assigned. Note, `NA` is given for the name of elements that were not assigned a label. The columns **row** and **col** display the variables at the tail of the paths and the variables at the head of the paths, respectively.
 
 ```{r table-params}
+model_summary <- summary(.models[[1]])
 kable(model_summary$parameters)
 ```
 
