@@ -4,6 +4,7 @@
 #' @examples
 #' data(AdeFit)
 #' mxReport(.models = list(AdeFit, AeFit))
+#' @export
 
 mxReport <- function(.models, report_file = "openmx_report.html", report_dir = ".", params = report_params(name = "Aaron")) {
 
@@ -17,5 +18,4 @@ mxReport <- function(.models, report_file = "openmx_report.html", report_dir = "
     clean = F,
     quiet = TRUE
   )
-
 }
