@@ -1,0 +1,48 @@
+<!-- requires MxModel object assigned to .model -->
+# {{ .label }} Model Summary
+
+This model was fit on `r format(.model@output$timestamp, "%x at %I:%M%P")` using OpenMx v`r .model@output$mxVersion`.
+
+
+## Submodels
+
+```{r {{ .label }}-submodel-description, results='asis'}
+if (smN(.model) == 1) {
+  cat("This model included only a single submodel ", smNames(.model), ".", sep = "")
+} else {
+  cat("This model included ", smN(.model), " submodels.", sep = "")
+}
+```
+
+### Summary Statistics
+
+The following table provides summary statistics for each of the included variables:
+
+```{r {{ .label }}-submodel-summary-stats, results='asis'}
+smSummaries(.model) %>%
+  kable(format.args = list(digits = 2)) %>%
+  collapse_rows(columns = 1) %>%
+  kable_styling(bootstrap_options = "condensed")
+```
+
+### Covariance Matrices
+
+Pairwise correlations were calculated among all variables comprising each submodel. The upper-triangles contain pearson product-moment correlations between for numeric variables, polyserial correlations between numeric and ordinal variables, and polychoric correlations between ordinal variables; the lower-triangles contain p-values for tests of bivariate normality for each pair of variables.
+
+```{r {{ .label }}-covar-calc}
+sm.cors <- .model %>% 
+  smData() %>% 
+  map(polycor::hetcor, use = "pairwise.complete")
+```
+
+```{r {{ .label }}-covar-tables, results='asis'}
+sm.cors %>% 
+  map(spliceHetCor, values = c("tests", "correlations")) %>%
+  map(formatC, digits = 3, width = -1) %>% 
+  map(sub, pattern = "NA", replacement = "") %>% 
+  iwalk(~ .x %>% 
+          kable(caption = sprintf("%s correlations", .y)) %>% 
+          kable_styling(bootstrap_options = "condensed") %>% 
+          cat
+  )
+```

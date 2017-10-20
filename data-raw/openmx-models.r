@@ -1,7 +1,13 @@
 # Generate example MxModel objects
 #
+# NOTE: Because mxModel objects contain date/time stamps, git will think the
+#       exported rda files have changed everytime this script is run. Only
+#       update these files if substantive changes have been made to the models.
+#
 # Outputs:
 #  - data/AdeFit
+#  - data/AeFit
+#  - data/eFit
 
 library(OpenMx)
 library(devtools)
@@ -30,29 +36,25 @@ laVaMZ    <- c("v1MZ","c21MZ","v2MZ")  # labels for (co)variances for MZ twins
 laVaDZ    <- c("v1DZ","c21DZ","v2DZ")  # labels for (co)variances for DZ twins
 
 
-# PREPARE ADE MODEL -------------------------------------------------------
+# Prepare ADE model -------------------------------------------------------
 
 # Set Starting Values
 svMe      <- 20                    # start value for means
 svPa      <- .6                    # start value for path coefficients (sqrt(variance/#ofpaths))
 
-
-# ADE Model
 # Matrices declared to store a, d, and e Path Coefficients
 pathA     <- mxMatrix( type="Full", nrow=nv, ncol=nv, free=TRUE, values=svPa, label="a11", name="a" )
 pathD     <- mxMatrix( type="Full", nrow=nv, ncol=nv, free=TRUE, values=svPa, label="d11", name="d" )
 pathE     <- mxMatrix( type="Full", nrow=nv, ncol=nv, free=TRUE, values=svPa, label="e11", name="e" )
 
-
 # Matrices generated to hold A, D, and E computed Variance Components
-covA      <- mxAlgebra( expression=a %*% t(a), name="A" )
-covD      <- mxAlgebra( expression=d %*% t(d), name="D" )
-covE      <- mxAlgebra( expression=e %*% t(e), name="E" )
-
+covA      <- mxAlgebra(expression=a %*% t(a), name="A")
+covD      <- mxAlgebra(expression=d %*% t(d), name="D")
+covE      <- mxAlgebra(expression=e %*% t(e), name="E")
 
 # Matrices for covariates and linear regression coefficients
-defAge    <- mxMatrix( type="Full", nrow=1, ncol=1, free=FALSE, labels=c("data.age"), name="Age" )
-pathB     <- mxMatrix( type="Full", nrow=1, ncol=1, free=TRUE, values= .01, label="b11", name="b" )
+defAge <- mxMatrix(type="Full", nrow=1, ncol=1, free=FALSE, labels=c("data.age"), name="Age")
+pathB  <- mxMatrix(type="Full", nrow=1, ncol=1, free=TRUE, values= .01, label="b11", name="b")
 
 
 # Algebra for expected Mean Matrices in MZ & DZ twins
@@ -74,11 +76,11 @@ dataDZ <- mxData(observed = subset(twinData, zyg == 3), type = "raw")
 # Objective objects for Multiple Groups
 expMZ <-
   mxExpectationNormal(covariance = "expCovMZ",
-                      means = "expMean")
+                      means = "expMean",
                       dimnames = selVars)
 expDZ <-
   mxExpectationNormal(covariance = "expCovDZ",
-                      means = "expMean")
+                      means = "expMean",
                       dimnames = selVars)
 funML <- mxFitFunctionML()
 
@@ -92,4 +94,19 @@ AdeModel  <- mxModel( "ADE", pars, modelMZ, modelDZ, multi )
 
 AdeFit    <- mxRun(AdeModel)
 
-devtools::use_data(AdeFit, overwrite = TRUE)
+
+# Fit Submodels -----------------------------------------------------------
+
+# Run AE model
+AeModel <- mxModel(AdeFit, name = "AE")
+AeModel <- omxSetParameters(AeModel, labels = "d11", free = FALSE, values = 0)
+AeFit   <- mxRun(AeModel)
+
+# Run E model
+eModel <- mxModel(AeFit, name = "E")
+eModel <- omxSetParameters(eModel, labels = "a11", free = FALSE, values = 0)
+eFit   <- mxRun(eModel)
+
+
+# Export ------------------------------------------------------------------
+devtools::use_data(AdeFit, AeFit, eFit, overwrite = TRUE)
