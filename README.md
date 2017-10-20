@@ -1,5 +1,19 @@
 # mxtx: OpenMx Transcriber
 
+## Installation
+
+```r
+# install.packages("devtools")
+devtools::install_github("aaronwolen/mxtx")
+```
+
+## Example
+
+```r
+library(mxtx)
+mxReport(list(AdeFit, AeFit, c(AdeFit, AeFit)))
+```
+
 ## Development resources
 
 * [OpenMx manual](http://openmx.psyc.virginia.edu/docs/OpenMx/latest/OpenMxUserGuide.pdf)
