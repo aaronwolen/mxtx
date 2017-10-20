@@ -7,8 +7,6 @@
 
 mxReport <- function(.models, report_file = "openmx_report.html", report_dir = ".", params = report_params(name = "Aaron")) {
 
-  stopifnot(all(vapply(.models, class, FUN.VALUE = "") == "MxModel"))
-
   rmd_file <- system.file("openmx_report.Rmd", package = "mxtx")
   report_dir <- normalizePath(report_dir, mustWork = TRUE)
 

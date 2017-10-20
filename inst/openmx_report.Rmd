@@ -21,17 +21,33 @@ suppressPackageStartupMessages(library(OpenMx))
 
 opts_chunk$set(echo = FALSE)
 options(knitr.table.format = "html")
+
+# mxtx report modules
+.modules <- c(
+  "model-summary.Rmd",
+  "model-comparison.Rmd"
+)
+
+.modules <- system.file("modules", .modules, package = "mxtx", mustWork = TRUE)
 ```
 
-```{r model-summaries, eval=TRUE}
+```{r model-summaries, eval=TRUE, results='asis'}
 # labels for chunk names and paths
-.labels <- make.names(map_chr(.models, "name"))
-names(.models) <- .labels
 
-src <- mapply(knit_expand, .label = .labels, MoreArgs = list(file = system.file("modules/model-summary.Rmd", package = "mxtx")))
+src <- lapply(.models, reportModule)
+# unlist(src)
+# str(.models, max.level = 2)
+
+# purrr::map(.models, isS4)
+# lapply(.models, isS4)
+
+# names(.models) <- make.names(map_chr(.models, "name"))
+
+# select report module based on element length
+# src <- imap(.models, ~ knit_expand(.modules[length(.x)], .label = .y))
 ```
 
-`r knit(text = unlist(src))`
+`r unlist(src)`
 
 ## Free Parameters
 

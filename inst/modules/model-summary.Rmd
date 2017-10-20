@@ -1,9 +1,5 @@
-```{r {{ .label }}-setup}
-.model <- .models[["{{ .label }}"]]
-```
-
-
-# `r .model$name` Model Summary
+<!-- requires MxModel object assigned to .model -->
+# {{ .label }} Model Summary
 
 This model was fit on `r format(.model@output$timestamp, "%x at %I:%M%P")` using OpenMx v`r .model@output$mxVersion`.
 
@@ -24,7 +20,7 @@ The following table provides summary statistics for each of the included variabl
 
 ```{r {{ .label }}-submodel-summary-stats, results='asis'}
 smSummaries(.model) %>%
-  kable() %>%
+  kable(format.args = list(digits = 2)) %>%
   collapse_rows(columns = 1) %>%
   kable_styling(bootstrap_options = "condensed")
 ```
