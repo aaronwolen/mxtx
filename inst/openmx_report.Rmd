@@ -34,7 +34,7 @@ options(knitr.table.format = "html")
 ```{r model-summaries, eval=TRUE, results='asis'}
 # labels for chunk names and paths
 
-src <- lapply(.models, reportModule)
+src <- lapply(.models, mxtx::reportModule)
 # unlist(src)
 # str(.models, max.level = 2)
 
