@@ -31,20 +31,8 @@ options(knitr.table.format = "html")
 .modules <- system.file("modules", .modules, package = "mxtx", mustWork = TRUE)
 ```
 
-```{r model-summaries, eval=TRUE, results='asis'}
-# labels for chunk names and paths
-
+```{r generate-modules, results='asis'}
 src <- lapply(.models, mxtx::reportModule)
-# unlist(src)
-# str(.models, max.level = 2)
-
-# purrr::map(.models, isS4)
-# lapply(.models, isS4)
-
-# names(.models) <- make.names(map_chr(.models, "name"))
-
-# select report module based on element length
-# src <- imap(.models, ~ knit_expand(.modules[length(.x)], .label = .y))
 ```
 
 `r unlist(src)`
