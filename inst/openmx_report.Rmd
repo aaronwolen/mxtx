@@ -3,7 +3,7 @@ title: OpenMx Analysis
 output: 
   html_document: 
     toc: yes
-    toc_depth: 1
+    toc_depth: 2
 ---
 
 
@@ -36,20 +36,3 @@ src <- lapply(.models, mxtx::reportModule)
 ```
 
 `r unlist(src)`
-
-## Free Parameters
-
-This table shows a list of all the free parameters with their name, matrix element locators, parameter estimate and standard error, as well as lower and upper bounds if those were assigned. Note, `NA` is given for the name of elements that were not assigned a label. The columns **row** and **col** display the variables at the tail of the paths and the variables at the head of the paths, respectively.
-
-```{r table-params}
-model_summary <- summary(.models[[1]])
-kable(model_summary$parameters)
-```
-
-## Goodness of Fit Statistics
-
-This tables includes the number of observed statistics, the number of estimated parameters, the degrees of freedom, minus twice the log-likelihood of the data, the number of observations, the chi-square and associated p-value and several information criteria.
-
-```{r table-gof}
-kable(table_gof(model_summary))
-```
