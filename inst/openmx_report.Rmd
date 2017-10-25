@@ -21,15 +21,17 @@ suppressPackageStartupMessages(library(OpenMx))
 
 opts_chunk$set(echo = FALSE)
 options(knitr.table.format = "html")
-
-# mxtx report modules
-.modules <- c(
-  "model-summary.Rmd",
-  "model-comparison.Rmd"
-)
-
-.modules <- system.file("modules", .modules, package = "mxtx", mustWork = TRUE)
 ```
+
+
+```{r observed-data-summary-module}
+src <- knitr::knit_expand(
+  file = system.file("modules", "observed-data-summary.Rmd", package = "mxtx"), 
+  .label = make.names(.models[[1]]$name)
+)
+```
+
+`r knitr::knit(text = src, envir = env(.model = .models[[1]]), quiet = TRUE)`
 
 ```{r generate-modules, results='asis'}
 src <- lapply(.models, mxtx::reportModule)
