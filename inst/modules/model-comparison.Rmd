@@ -10,7 +10,7 @@
 
 
 The fit of `r ifelse(.n == 2, paste(.n, " models were "), paste(.n, " model was "))` compared to the **`r .base$name`** reference model. 
-Raw fit statistics for `r .base$name` are presented in the first row, subsequent rows represent comparisons between `r .base$name` and models indicated in the *comparison* column. Model comparisons are made by subtracting the fit of the comparison model from the fit of `.base$name`.
+Raw fit statistics for `r .base$name` are presented in the first row, subsequent rows represent comparisons between `r .base$name` and models indicated in the *comparison* column. Model comparisons are made by subtracting the fit of the comparison model from the fit of `r .base$name`.
 
 ```{r {{.label}}-comparison-table, results='asis'}
 OpenMx::mxCompare(.base, .comparisons)[-1] %>%
