@@ -1,11 +1,12 @@
 <!-- requires MxModel object assigned to .model -->
-# {{ .label }} - Observed Data Summary
+# Observed Data Summary
 
 ```{r {{ .label }}-submodel-description, results='asis'}
+intro <- sprintf("The observed data extracted from the %s model", .model$name)
 if (smN(.model) == 1) {
-  cat("This model included only a single submodel ", smNames(.model), ".", sep = "")
+  cat(intro, " included only a single submodel ", smNames(.model), ".", sep = "")
 } else {
-  cat("This model included ", smN(.model), " submodels.", sep = "")
+  cat(intro, " included ", smN(.model), " submodels.", sep = "")
 }
 ```
 
