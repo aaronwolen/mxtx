@@ -1,7 +1,10 @@
 Package: mxtx
 Title: OpenMx Transcriber 
-Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Version: 0.1
+Authors@R: as.person(c(
+    "Aaron Wolen <aaron@wolen.com> [aut, cre]", 
+    "Timothy P. York <tpyork@vcu.edu> [aut]"
+  ))
 Description: Automated reporting for OpenMx analyses.
 Depends: R (>= 3.4.0)
 Imports:
